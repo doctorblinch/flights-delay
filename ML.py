@@ -1,7 +1,7 @@
 import datetime
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import KFold, train_test_split
+import pickle
 
 
 def read_data():
@@ -16,18 +16,9 @@ def read_processed_data(file_name='data/final_data.csv'):
 
 
 def comparation_of_ML_models():
-    data = read_processed_data()
-    X = data.drop('ARRIVAL_DELAY', axis=1)
-    y = data['ARRIVAL_DELAY']
+    with open('data/model', 'rb') as f:
+        model = pickle.load(f)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-
-    # Linear
-    #lm = linear_model.LinearRegression()
-    import sklearn.ensemble
-    rf = sklearn.ensemble.RandomForestRegressor()
-    model = rf.fit(X_train, y_train)
-    print('Score:', model.score(X_test, y_test))
 
     return 10
 
@@ -62,6 +53,16 @@ def preprocess_data():
     )
 
     processed_data = data[np.isfinite(data['ARRIVAL_DELAY'])]
+    # Processing categorical vars
+
+    # Airline: {0: 'AA', 1: 'AS', 2: 'B6', 3: 'DL', 4: 'EV', 5: 'F9', 6: 'HA', 7: 'MQ', 8: 'NK', 9: 'OO', 10: 'UA',
+    # 11: 'US', 12: 'VX', 13: 'WN'}
+
+    #
+    # from sklearn import preprocessing
+    # le = preprocessing.LabelEncoder()
+
+
     processed_data.to_csv('data/final_data.csv', index=False)
 
 
